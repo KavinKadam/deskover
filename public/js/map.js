@@ -5,6 +5,10 @@ let markers = [];
 let searchBarCount = 0;
 let cityCircle;
 let dot;
+let directionsService;
+let directionsRenderer;
+let midpoint;
+let verdict;
 
 // fetch API key
 async function fetchApiKey() {
@@ -41,12 +45,65 @@ async function initMap() {
 
     // Request needed libraries
     const { Map } = await google.maps.importLibrary("maps");
+    //const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+    directionsService = new google.maps.DirectionsService();
+    directionsRenderer = new google.maps.DirectionsRenderer();
+    
 
     geocoder = new google.maps.Geocoder();
     map = new Map(document.getElementById("map"), {
         zoom: 12,
         center: position,
         mapId: "MIDPOINT_MAP",
+    });
+    /*
+       // The marker, positioned at Uluru
+       const marker = new AdvancedMarkerElement({
+        map: map,
+        position: position,
+        title: "Uluru",
+      });*/ 
+
+
+      directionsRenderer.setMap(map);
+      directionsRenderer.setPanel(document.getElementById('directionsPanel'));
+
+
+
+      
+    
+   //   document.getElementById("start").a  ddEventListener("change", onChangeHandler);
+    //  document.getElementById("end").addEventListener("change", onChangeHandler);
+}
+
+
+  function calcRoute() {
+    var start = new google.maps.LatLng(addresses[0].location.lat, addresses[0].location.lng);
+    var end = verdict.address;
+    var request = {
+      origin: start,
+      destination: end,
+      travelMode: 'DRIVING'
+    };
+    directionsService.route(request, function(result, status) {
+      if (status == 'OK') {
+        directionsRenderer.setDirections(result);
+      }
+    });
+  }
+
+function codeAddress() {
+    var address = document.getElementById('address').value;
+    geocoder.geocode({ 'address': address }, function (results, status) {
+        if (status == 'OK') {
+            map.setCenter(results[0].geometry.location);
+            var marker = new google.maps.Marker({
+                map: map,
+                position: results[0].geometry.location
+            });
+        } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+        }
     });
 }
 
@@ -235,6 +292,8 @@ async function handleFindRestaurants(midpoint, radius) {
     try {
         const restaurants = await findRestaurants(midpoint, radius);
         console.log('Found restaurants:', restaurants);
+        verdict = restaurants[0];  
+        calcRoute();
     } catch (error) {
         console.error('Error fetching restaurants:', error);
     }
