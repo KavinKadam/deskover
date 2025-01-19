@@ -1,5 +1,6 @@
 let map;
 let geocoder;
+let addresses = [];
 
 // fetch API key
 async function fetchApiKey() {
@@ -11,6 +12,8 @@ async function fetchApiKey() {
 
     initMap();  //  initialize the map
     initSearch(); // initialize the autocomplete search bar
+    initSearch();
+
   } catch (error) {
     console.error('Error fetching API key:', error);
   }
@@ -100,6 +103,8 @@ async function initSearch() {
       /* replacer */ null,
       /* space */ 2,
     );
+
+    addresses.push(place.toJSON());
 
     const marker = new AdvancedMarkerElement({
         map,
