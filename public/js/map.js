@@ -324,13 +324,14 @@ function handleChange() {
     var priceRange = parseInt(document.getElementById('price').value);
     // Filter based on selected rating and price level
     let filteredItems = restaurants;
-    console.log(filteredItems);
+
     if (rating) {
         filteredItems = filteredItems.filter(restaurant => restaurant.rating >= rating);
     }
     if (priceRange >= 0) {
         filteredItems = filteredItems.filter(restaurant => restaurant.price_level === priceRange);
     }
+    
     verdict = restaurants[0];
     calcRoute();
     // Display the filtered menu
