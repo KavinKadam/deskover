@@ -1,7 +1,15 @@
 const express = require('express');
-const geocodeAddress = require('./routes/geocode');
-const calculateMidpoint = require('./routes/midpoint');
-const findRestaurants = require('./routes/places');
+
+document.querySelector('#fetch-geocode').addEventListener('click', () => {
+    const address = '1 Hacker Way'; // Replace with user input if needed
+    fetch(`/api/geocode?address=${encodeURIComponent(address)}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => console.error('Error fetching geocode:', error));
+});
+
 require('dotenv').config();
 
 const app = express();
@@ -38,5 +46,5 @@ app.post('/api/midpoint', async (req, res) => {
 // Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(Server running on port ${PORT});
+    console.log(`Server running on port ${PORT}`);
 });
