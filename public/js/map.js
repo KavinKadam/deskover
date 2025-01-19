@@ -1,7 +1,7 @@
 let map;
 let geocoder;
 let addresses = [];
-let searchBarCount = 2;
+let searchBarCount = 0;
 let cityCircle;
 let dot;
 
@@ -72,6 +72,8 @@ function codeAddress() {
 }
 
 async function initSearch() {
+    searchBarCount++;
+
     // Request needed libraries.
     //@ts-ignore
     await google.maps.importLibrary("places");
@@ -130,7 +132,6 @@ function initAddField() {
 
     addButton.addEventListener("click", () => {
         initSearch();
-        searchBarCount++;
 
         if (searchBarCount == 5) {
             document.getElementById("addButton").remove();

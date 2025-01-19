@@ -71,10 +71,16 @@
 
 @media only screen and (max-width: 767px) {
   #container {
+    height: max-content;
     flex-direction: column;
   }
 
   #selectionPane {
-      width: 100%;
+    width: 100%;
+  }
+
+  #map {
+    height: 500px;
+    flex: none;
   }
 }
