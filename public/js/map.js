@@ -372,4 +372,4 @@ async function handleFindRestaurants(midpoint, radius) {
 }
 
 fetchApiKey();
-carousel();
+carousel(); 
