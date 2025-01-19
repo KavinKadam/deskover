@@ -159,6 +159,7 @@ function calculateMidpoint(place) {
     }
 
     drawCircle(midpoint); // { lat: <average latitude>, lng: <average longitude> }
+
 }
 
 function drawCircle(midpoint) {
@@ -185,6 +186,8 @@ function drawCircle(midpoint) {
         center: center,
         radius: 10,
     });
+
+    handleFindRestaurants(midpoint, cityCircle.radius);
 }
 
 
@@ -195,7 +198,7 @@ function findRestaurants(place, radius) {
 
         // Define the search request
         const request = {
-            location: place.location,
+            location: place,
             radius: radius,
             type: 'restaurant',
         };
@@ -225,5 +228,7 @@ async function handleFindRestaurants(midpoint, radius) {
         console.error('Error fetching restaurants:', error);
     }
 }
+
+
 
 fetchApiKey();
