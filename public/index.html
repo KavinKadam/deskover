@@ -6,13 +6,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Deskover</title>
   <link rel="stylesheet" type="text/css" href="css/styles.css">
+  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
 </head>
 
 <body>
   <div id="container">
     <div id="selectionPane">
-      <div class="inputBox">
-        Verdict
+      <div id="recommendedLabel">Recommended</div>
+      <div id="verdictDisplay" class="inputBox">
+        <div class="option">123</div>
+        <div class="option">456</div>
+        <div class="option">789</div>
       </div>
       <div id="addressInputs" class="inputBox">  
       </div>
@@ -34,6 +38,8 @@
     <div id="map">
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
     <script src="/js/map.js"></script>
   </div>
 
