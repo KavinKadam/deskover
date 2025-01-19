@@ -309,5 +309,56 @@ async function handleFindRestaurants(midpoint, radius) {
     }
 }
 
+function carousel() {
+    $('#verdictDisplay').slick({
+        prevArrow: '<button type="button" class="slick-custom-arrow slick-prev"> < </button>',
+        nextArrow: '<button type="button" class="slick-custom-arrow slick-next"> > </button>'
+    });
+}
+
+document.getElementById("rating").addEventListener('change', handleChange);
+document.getElementById("price").addEventListener('change', handleChange);
+function handleChange() {
+    var rating = parseFloat(document.getElementById('rating').value);
+    var priceRange = parseInt(document.getElementById('price').value);
+    // Filter based on selected rating and price level
+    let filteredItems = restaurants;
+    console.log(filteredItems);
+    if (rating) {
+        filteredItems = filteredItems.filter(restaurant => restaurant.rating >= rating);
+    }
+    if (priceRange >= 0) {
+        filteredItems = filteredItems.filter(restaurant => restaurant.price_level === priceRange);
+    }
+    /*
+    // Sort filtered items by distance if required (distance already calculated earlier)
+    filteredItems.sort((a, b) => {
+        const distanceA = google.maps.geometry.spherical.computeDistanceBetween(midpoint, new google.maps.LatLng(a.lat, a.lng));
+        const distanceB = google.maps.geometry.spherical.computeDistanceBetween(midpoint, new google.maps.LatLng(b.lat, b.lng));
+        return distanceA - distanceB;
+    });*/
+    // Display the filtered menu
+    displayMenu(filteredItems);
+}
+
+// Function to display the filtered menu items
+function displayMenu(filteredItems) {
+    var menu = document.getElementById('menu');
+    // Clear previous results
+    menu.innerHTML = "";
+    // If there are matching items, display them
+    if (filteredItems.length > 0) {
+        var list = "<h3>Filtered Menu:</h3><ul>";
+        filteredItems.forEach(function(item) {
+        var price = ['$', '$', '$', '$'];
+        list += "<li>" + item.name + " - " + item.rating + " - " + price[item.price_level-1] + "</li>";
+        });
+        list += "</ul>";
+        menu.innerHTML = list;
+    } else {
+        menu.innerHTML = "<p>No items found for the selected criteria.</p>";
+    }
+}
+
 fetchApiKey();
 carousel();
