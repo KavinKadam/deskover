@@ -5,6 +5,9 @@ let markers = [];
 let searchBarCount = 0;
 let cityCircle;
 let dot;
+let directionsService;
+let directionsRenderer;
+let midpoint;
 
 // fetch API key
 async function fetchApiKey() {
@@ -43,8 +46,8 @@ async function initMap() {
     // Request needed libraries
     const { Map } = await google.maps.importLibrary("maps");
     //const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-    var directionsService = new google.maps.DirectionsService();
-    var directionsRenderer = new google.maps.DirectionsRenderer();
+    directionsService = new google.maps.DirectionsService();
+    directionsRenderer = new google.maps.DirectionsRenderer();
 
     geocoder = new google.maps.Geocoder();
     map = new Map(document.getElementById("map"), {
@@ -66,17 +69,16 @@ async function initMap() {
 
 
 
-        calcRoute();
       
     
-   //   document.getElementById("start").addEventListener("change", onChangeHandler);
+   //   document.getElementById("start").a  ddEventListener("change", onChangeHandler);
     //  document.getElementById("end").addEventListener("change", onChangeHandler);
 }
 
 
   function calcRoute() {
-    var start = new google.maps.LatLng(49.26073820632124, -123.24589724402404);
-    var end = new google.maps.LatLng(49.27932973510947, -122.92014097134035);
+    var start = new google.maps.LatLng(addresses[0].location.lat, addresses[0].location.lng);
+    var end = new google.maps.LatLng(midpoint.lat, midpoint.lng);
     var request = {
       origin: start,
       destination: end,
@@ -198,7 +200,7 @@ function calculateMidpoint(place) {
         totalLng += place.location.lng;
     });
 
-    const midpoint = {
+    midpoint = {
         lat: totalLat / place.length,
         lng: totalLng / place.length,
     };
@@ -213,6 +215,7 @@ function calculateMidpoint(place) {
     }
 
     drawCircle(midpoint); // { lat: <average latitude>, lng: <average longitude> }
+    calcRoute();
 
 }   
 
