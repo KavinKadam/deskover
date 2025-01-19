@@ -1,0 +1,23 @@
+{
+  "name": "deskover",
+  "version": "1.0.0",
+  "description": "Been too lazy to plan an evening? Too poor to hire a butler? We gotchu.",
+  "homepage": "https://github.com/KavinKadam/deskover#readme",
+  "bugs": {
+    "url": "https://github.com/KavinKadam/deskover/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KavinKadam/deskover.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
