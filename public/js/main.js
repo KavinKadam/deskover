@@ -25,7 +25,7 @@ app.post('/api/midpoint', async (req, res) => {
             const location = await geocodeAddress(address);
             locations.push(location);
         }
-
+        
         // Step 2: Calculate the midpoint
         const midpoint = calculateMidpoint(locations);
 
