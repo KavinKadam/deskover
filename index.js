@@ -5,16 +5,16 @@ const app = express();
 app.use(express.json());
 const fs = require("fs");
 
-app.use("/script", express.static("./public/scripts"));
+app.use("/js", express.static("./public/js"));
 app.use("/img", express.static("./public/images"));
+app.use("/css", express.static("./public/css"));
 
 app.get("/", function (req, res) {
-    let doc = fs.readFileSync("./frontend/index.html", "utf8");
+    let doc = fs.readFileSync("./public/index.html", "utf8");
 
     // just send the text stream
     res.send(doc);
 });
-
 
 // RUN SERVER
 let port = 8000;
