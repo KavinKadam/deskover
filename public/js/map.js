@@ -341,12 +341,20 @@ function handleChange() {
 function displayMenu(filteredItems) {
     // Clear previous results
     menu.innerHTML = "";
+     // Initialize the carousel only once
+     if (!$('#verdictDisplay').hasClass('slick-initialized')) {
+        $('#verdictDisplay').slick({
+            prevArrow: '<button type="button" class="slick-custom-arrow slick-prev"> < </button>',
+            nextArrow: '<button type="button" class="slick-custom-arrow slick-next"> > </button>'
+        });
+    }
+
     // If there are matching items, display them
     if (filteredItems.length > 0) {
         filteredItems.forEach(function (item) {
             var price = "$$$$"; 
             var level;
-            
+
             if (item.price_level !== undefined) {
                 level = item.price_level;
             } else {
@@ -354,11 +362,6 @@ function displayMenu(filteredItems) {
             }
 
             console.log(item.name);
-
-            $('#verdictDisplay').slick({
-                prevArrow: '<button type="button" class="slick-custom-arrow slick-prev"> < </button>',
-                nextArrow: '<button type="button" class="slick-custom-arrow slick-next"> > </button>'
-            })
 
             $('#verdictDisplay').slick(
                 'slickAdd',
