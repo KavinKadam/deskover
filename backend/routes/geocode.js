@@ -3,10 +3,14 @@ require('dotenv').config(); // To load environment variables
 const express = require('express');
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     const address = req.query.address;
-    // Use Google Geocoding API or dummy data
-    res.json({ success: true, geocode: `Geocode for ${address}` });
+    try {
+        const location = await geocodeAddress(address);
+        res.json({ success: true, location });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
 });
 
 module.exports = router;
