@@ -339,16 +339,20 @@ function handleChange() {
 
 // Function to display the filtered menu items
 function displayMenu(filteredItems) {
-    // Clear previous results
+
     menu = document.getElementById("verdictDisplay");
     menu.innerHTML = "";
 
      // Initialize the carousel only once
-     if (!$('#verdictDisplay').hasClass('slick-initialized')) {
+    if ($('#verdictDisplay').hasClass('slick-initialized')) {
+        $('#verdictDisplay').slick('destroy');
+    }
+
+    if (!$('#verdictDisplay').hasClass('slick-initialized')) {
         $('#verdictDisplay').slick({
             prevArrow: '<button type="button" class="slick-custom-arrow slick-prev"> < </button>',
             nextArrow: '<button type="button" class="slick-custom-arrow slick-next"> > </button>'
-        });
+        })
     }
 
     // If there are matching items, display them
