@@ -13,7 +13,6 @@ app.use("/css", express.static("./public/css"));
 app.get('/api-key', (req, res) => {
     // send API key to the frontend
     const API_KEY = process.env.GOOGLE_PLACES_API;
-    console.log(API_KEY);
     res.send({ apiKey: API_KEY });
   });
 
