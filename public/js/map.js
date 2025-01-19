@@ -268,7 +268,6 @@ function findRestaurants(place, radius) {
                     const distanceB = google.maps.geometry.spherical.computeDistanceBetween(place, b.geometry.location);
                     return distanceA - distanceB;
                   });
-                
                 restaurants = results.map(place => ({
                     name: place.name,
                     address: place.vicinity,
@@ -277,7 +276,9 @@ function findRestaurants(place, radius) {
                     lat: place.geometry.location.lat(),
                     lng: place.geometry.location.lng(),
                 }));
-
+                verdict = restaurants[0];  
+                calcRoute();
+                displayMenu(results);
                 resolve(restaurants);
             } else {
                 reject(`Error fetching restaurants: ${status}`);
@@ -301,10 +302,12 @@ function handleChange() {
     if (priceRange >= 0) {
         filteredItems = filteredItems.filter(restaurant => restaurant.price_level === priceRange);
     }
-
+    verdict = restaurants[0];  
+    calcRoute();
     // Display the filtered menu
     displayMenu(filteredItems);
 }
+
 // Function to display the filtered menu items
 function displayMenu(filteredItems) {
     var menu = document.getElementById('menu');
@@ -314,8 +317,14 @@ function displayMenu(filteredItems) {
     if (filteredItems.length > 0) {
         var list = "<h3>Filtered Menu:</h3><ul>";
         filteredItems.forEach(function(item) {
-        var price = ['$', '$', '$', '$'];
-        list += "<li>" + item.name + " - " + item.rating + " - " + price[item.price_level-1] + "</li>";
+        var price = "$$$$";
+        var level;
+        if(item.price_level !== undefined) {
+            level = item.price_level;
+        } else {
+            level = 1;
+        }
+        list += "<li>" + item.name + " - " + item.rating + " - " + price.substring(0,level) + "</li>";
         });
         list += "</ul>";
         menu.innerHTML = list;
@@ -328,8 +337,6 @@ async function handleFindRestaurants(midpoint, radius) {
     try {
         const restaurants = await findRestaurants(midpoint, radius);
         console.log('Found restaurants:', restaurants);
-        verdict = restaurants[0];  
-        calcRoute();
     } catch (error) {
         console.error('Error fetching restaurants:', error);
     }
