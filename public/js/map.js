@@ -5,6 +5,7 @@ let markers = [];
 let searchBarCount = 0;
 let cityCircle;
 let dot;
+let restaurants;
 
 // fetch API key
 async function fetchApiKey() {
@@ -217,12 +218,21 @@ function findRestaurants(place, radius) {
         // Perform the nearby search
         service.nearbySearch(request, (results, status) => {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
-                const restaurants = results.map(place => ({
+                results.sort((a, b) => {
+                    const distanceA = google.maps.geometry.spherical.computeDistanceBetween(place, a.geometry.location);
+                    const distanceB = google.maps.geometry.spherical.computeDistanceBetween(place, b.geometry.location);
+                    return distanceA - distanceB;
+                  });
+                
+                restaurants = results.map(place => ({
                     name: place.name,
                     address: place.vicinity,
                     rating: place.rating,
                     price_level: place.price_level,
+                    lat: place.geometry.location.lat(),
+                    lng: place.geometry.location.lng(),
                 }));
+
                 resolve(restaurants);
             } else {
                 reject(`Error fetching restaurants: ${status}`);
@@ -237,6 +247,56 @@ async function handleFindRestaurants(midpoint, radius) {
         console.log('Found restaurants:', restaurants);
     } catch (error) {
         console.error('Error fetching restaurants:', error);
+    }
+}
+
+document.getElementById("rating").addEventListener('change', handleChange);
+document.getElementById("price").addEventListener('change', handleChange);
+
+function handleChange() {
+    var rating = parseFloat(document.getElementById('rating').value);
+    var priceRange = parseInt(document.getElementById('price').value);
+
+    // Filter based on selected rating and price level
+    let filteredItems = restaurants;
+    console.log(filteredItems);
+    if (rating) {
+        filteredItems = filteredItems.filter(restaurant => restaurant.rating >= rating);
+    }
+
+    if (priceRange >= 0) {
+        filteredItems = filteredItems.filter(restaurant => restaurant.price_level === priceRange);
+    }
+    /*
+    // Sort filtered items by distance if required (distance already calculated earlier)
+    filteredItems.sort((a, b) => {
+        const distanceA = google.maps.geometry.spherical.computeDistanceBetween(midpoint, new google.maps.LatLng(a.lat, a.lng));
+        const distanceB = google.maps.geometry.spherical.computeDistanceBetween(midpoint, new google.maps.LatLng(b.lat, b.lng));
+        return distanceA - distanceB;
+    });*/
+
+    // Display the filtered menu
+    displayMenu(filteredItems);
+}
+
+// Function to display the filtered menu items
+function displayMenu(filteredItems) {
+    var menu = document.getElementById('menu');
+
+    // Clear previous results
+    menu.innerHTML = "";
+
+    // If there are matching items, display them
+    if (filteredItems.length > 0) {
+        var list = "<h3>Filtered Menu:</h3><ul>";
+        filteredItems.forEach(function(item) {
+        var price = ['$', '$', '$', '$'];
+        list += "<li>" + item.name + " - " + item.rating + " - " + price[item.price_level-1] + "</li>";
+        });
+        list += "</ul>";
+        menu.innerHTML = list;
+    } else {
+        menu.innerHTML = "<p>No items found for the selected criteria.</p>";
     }
 }
 

@@ -1,4 +1,4 @@
-document.getElementById("food").addEventListener('change', handleChange);
+/*document.getElementById("food").addEventListener('change', handleChange);
 document.getElementById("price").addEventListener('change', handleChange);
 
 function handleChange() {
@@ -38,4 +38,4 @@ function displayMenu(filteredItems) {
     } else {
         menu.innerHTML = "<p>No items found for the selected criteria.</p>";
     }
-}
+}*/
