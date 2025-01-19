@@ -1,7 +1,8 @@
 let map;
 let geocoder;
 let addresses = [];
-let searchBarCount = 2;
+let markers = [];
+let searchBarCount = 0;
 let cityCircle;
 let dot;
 
@@ -13,10 +14,10 @@ async function fetchApiKey() {
 
         await loadMapScript(apiKey);  // load google maps script
 
-        initMap();  //  initialize the map
-        initSearch(); // initialize the autocomplete search bar
-        initSearch();
         initAddField();
+        await initMap();  //  initialize the map
+        await initSearch(); // initialize the autocomplete search bar
+        await initSearch();
 
     } catch (error) {
         console.error('Error fetching API key:', error);
@@ -47,7 +48,7 @@ async function initMap() {
 
     geocoder = new google.maps.Geocoder();
     map = new Map(document.getElementById("map"), {
-        zoom: 10,
+        zoom: 12,
         center: position,
         mapId: "MIDPOINT_MAP",
     });
@@ -104,6 +105,8 @@ function codeAddress() {
 }
 
 async function initSearch() {
+    searchBarCount++;
+
     // Request needed libraries.
     //@ts-ignore
     await google.maps.importLibrary("places");
@@ -112,6 +115,7 @@ async function initSearch() {
     // Create the input HTML element, and append it.
     //@ts-ignore
     const placeAutocomplete = new google.maps.places.PlaceAutocompleteElement();
+    placeAutocomplete.id = searchBarCount - 1;
 
     //@ts-ignore
     document.getElementById("addressInputs").appendChild(placeAutocomplete);
@@ -128,8 +132,7 @@ async function initSearch() {
     // document.getElementById("addressInputs").appendChild(selectedPlaceInfo);
     // Add the gmp-placeselect listener, and display the results.
     //@ts-ignore
-    placeAutocomplete.addEventListener("gmp-placeselect", async ({ place }) => {
-        console.log(place);
+    placeAutocomplete.addEventListener("gmp-placeselect", async function ({ place }) {
         await place.fetchFields({
             fields: ["displayName", "formattedAddress", "location"],
         });
@@ -140,13 +143,26 @@ async function initSearch() {
     //   /* space */ 2,
     //     );
 
-        addresses.push(place.toJSON());
+        if (!addresses[this.id]) {
+            addresses.push(place.toJSON());
+        } else {
+            addresses[this.id] = place.toJSON();
+        }
+
+        console.log(addresses);
 
         const marker = new AdvancedMarkerElement({
             map,
             position: place.location,
             title: place.displayName,
         })
+
+        if (!markers[this.id]) {
+            markers.push(marker);
+        } else {
+            markers[this.id].setMap(null);
+            markers[this.id] = marker;
+        }
 
         if (addresses.length >= 2) {
             calculateMidpoint(addresses);
@@ -162,7 +178,6 @@ function initAddField() {
 
     addButton.addEventListener("click", () => {
         initSearch();
-        searchBarCount++;
 
         if (searchBarCount == 5) {
             document.getElementById("addButton").remove();
@@ -226,9 +241,20 @@ function drawCircle(midpoint) {
         radius: 10,
     });
 
+    panToCenter(midpoint.lat, midpoint.lng);
     handleFindRestaurants(midpoint, cityCircle.radius);
 }
 
+// Function to pan to new mid point
+function panToCenter(newLat, newLng) {
+    if(map) {
+        const newCenter = new google.maps.LatLng(newLat, newLng);
+        map.panTo(newCenter);
+        map.setZoom(16);
+    } else {
+        console.log("Map is not initialized yet");
+    }
+}
 
 // Function to find restaurants near a location
 function findRestaurants(place, radius) {
@@ -267,7 +293,5 @@ async function handleFindRestaurants(midpoint, radius) {
         console.error('Error fetching restaurants:', error);
     }
 }
-
-
 
 fetchApiKey();
