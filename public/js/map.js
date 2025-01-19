@@ -48,7 +48,7 @@ async function initMap() {
     title: "Uluru",
   });*/
 }
-
+/*
 function codeAddress() {
   var address = document.getElementById('address').value;
   geocoder.geocode( { 'address': address}, function(results, status) {
@@ -63,7 +63,7 @@ function codeAddress() {
     }
   });
 }
-
+*/
 async function initSearch() {
   // Request needed libraries.
   //@ts-ignore
