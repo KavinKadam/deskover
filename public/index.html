@@ -12,24 +12,23 @@
 <body>
   <div id="container">
     <div id="selectionPane">
-      <div id="recommendedLabel">Recommended</div>
+      <div id="logo">
+        <img src="img/datacakestack.png">
+      </div>
       <div id="verdictDisplay" class="inputBox">
-        <div class="option">123</div>
-        <div class="option">456</div>
-        <div class="option">789</div>
       </div>
       <div id="addressInputs" class="inputBox">  
       </div>
       <div class="inputBox">
         <select id="price">
-          <option>Price</option>
+          <option selected disabled>Price</option>
           <option value="1">$10-20</option>
           <option value="2">$20-30</option>
           <option value="3">$30-50</option>
           <option value="4">$100+</option>
         </select>
         <select id="rating">
-          <option>Rating</option>
+          <option selected disabled>Rating</option>
           <option value="4.5">4.5+ Stars</option>
           <option value="4">4+ Stars</option>
           <option value="3.5">3.5+ Stars</option>
@@ -39,7 +38,7 @@
           <option value="1.5">1.5+ Stars</option>
           <option value="1">1+ Stars</option>
         </select>
-
+        
         <input type="number" id="searchRadius" placeholder="500" name="radius" min="250" max="2000">
       </div>
       <div id="menu"></div>

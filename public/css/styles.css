@@ -14,8 +14,19 @@
   font-family: Dekko;
 }
 
+#selectionPane #logo {
+  height: 175px;
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#logo img {
+  height: 100%;
+}
+
 #container {
-  height: 100vh;
   display: flex;
   flex-direction: row;
   background-color: rgb(235, 220, 193);
@@ -125,4 +136,8 @@ input {
     height: 500px;
     flex: none;
   }
+}
+
+li {
+  list-style-type: none;
 }
