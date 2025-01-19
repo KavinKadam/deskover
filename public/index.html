@@ -18,22 +18,19 @@
       <div id="addressInputs" class="inputBox">  
       </div>
       <div class="inputBox">
-        <select>
+        <select id="price">
           <option>Price Range</option>
-          <option>$1-10</option>
-          <option>$11-20</option>
-          <option>$20+</option>
+          <option value="below_ten">$1-10</option>
+          <option value="below_twenty">$11-20</option>
+          <option value="above_twenty">$20+</option>
         </select>
-        <select>
-          <option>Type</option>
-          <option>Vegan</option>
-          <option>Gluten-free</option>
+        <select id="food">
+          <option>Meal Type</option>
+          <option value="breakfast">Breakfast</option>
+          <option value="lunch">Lunch</option>
+          <option value="dinner">Dinner</option>
         </select>
       </div>
-    </div>
-    <div>
-      <input id="address" type="textbox" value="Sydney, NSW">
-      <input type="button" value="Encode" onclick="codeAddress()">
     </div>
     <div id="map">
     </div>

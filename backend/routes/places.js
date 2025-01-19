@@ -24,6 +24,9 @@ async function findRestaurants(location, radius) {
             name: place.name,
             address: place.vicinity,
             rating: place.rating,
+            breakfast: serves_breakfast,
+            lunch: serves_lunch,
+            dinner: serves_dinner,
         }));
 
         return restaurants;
