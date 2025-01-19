@@ -14,8 +14,16 @@
   font-family: Dekko;
 }
 
+#selectionPane #logo {
+  height: 150px;
+  padding: 15px;
+}
+
+#logo img {
+  height: 100%;
+}
+
 #container {
-  height: 100vh;
   display: flex;
   flex-direction: row;
   background-color: rgb(235, 220, 193);
