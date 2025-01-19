@@ -35,39 +35,17 @@ function loadMapScript(apiKey) {
 }
 
 async function initMap() {
-    // The location of Uluru
+    // The location of Vancouver
     const position = { lat: 49.246292, lng: -123.116226 };
 
     // Request needed libraries
     const { Map } = await google.maps.importLibrary("maps");
-    //const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
     geocoder = new google.maps.Geocoder();
     map = new Map(document.getElementById("map"), {
-        zoom: 11,
+        zoom: 12,
         center: position,
         mapId: "MIDPOINT_MAP",
-    });
-    /*
-       // The marker, positioned at Uluru
-       const marker = new AdvancedMarkerElement({
-        map: map,
-        position: position,
-        title: "Uluru",
-      });*/
-}
-
-function codeAddress() {
-    var address = document.getElementById('address').value;
-    geocoder.geocode({ 'address': address }, function (results, status) {
-        if (status == 'OK') {
-            map.setCenter(results[0].geometry.location);
-            var marker = new google.maps.Marker({
-                map: map,
-                position: results[0].geometry.location
-            });
-        } else {
-            alert('Geocode was not successful for the following reason: ' + status);
-        }
     });
 }
 
@@ -194,9 +172,20 @@ function drawCircle(midpoint) {
         radius: 10,
     });
 
+    panToCenter(midpoint.lat, midpoint.lng);
     handleFindRestaurants(midpoint, cityCircle.radius);
 }
 
+// Function to pan to new mid point
+function panToCenter(newLat, newLng) {
+    if(map) {
+        const newCenter = new google.maps.LatLng(newLat, newLng);
+        map.panTo(newCenter);
+        map.setZoom(16);
+    } else {
+        console.log("Map is not initialized yet");
+    }
+}
 
 // Function to find restaurants near a location
 function findRestaurants(place, radius) {
@@ -235,7 +224,5 @@ async function handleFindRestaurants(midpoint, radius) {
         console.error('Error fetching restaurants:', error);
     }
 }
-
-
 
 fetchApiKey();
