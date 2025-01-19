@@ -57,22 +57,10 @@ async function initMap() {
         center: position,
         mapId: "MIDPOINT_MAP",
     });
-    /*
-       // The marker, positioned at Uluru
-       const marker = new AdvancedMarkerElement({
-        map: map,
-        position: position,
-        title: "Uluru",
-      });*/ 
-
 
       directionsRenderer.setMap(map);
       directionsRenderer.setPanel(document.getElementById('directionsPanel'));
 
-
-
-      
-    
    //   document.getElementById("start").a  ddEventListener("change", onChangeHandler);
     //  document.getElementById("end").addEventListener("change", onChangeHandler);
 }
@@ -296,6 +284,44 @@ function findRestaurants(place, radius) {
             }
         });
     });
+}
+
+document.getElementById("rating").addEventListener('change', handleChange);
+document.getElementById("price").addEventListener('change', handleChange);
+
+function handleChange() {
+    var rating = parseFloat(document.getElementById('rating').value);
+    var priceRange = parseInt(document.getElementById('price').value);
+    // Filter based on selected rating and price level
+    let filteredItems = restaurants;
+    console.log(filteredItems);
+    if (rating) {
+        filteredItems = filteredItems.filter(restaurant => restaurant.rating >= rating);
+    }
+    if (priceRange >= 0) {
+        filteredItems = filteredItems.filter(restaurant => restaurant.price_level === priceRange);
+    }
+
+    // Display the filtered menu
+    displayMenu(filteredItems);
+}
+// Function to display the filtered menu items
+function displayMenu(filteredItems) {
+    var menu = document.getElementById('menu');
+    // Clear previous results
+    menu.innerHTML = "";
+    // If there are matching items, display them
+    if (filteredItems.length > 0) {
+        var list = "<h3>Filtered Menu:</h3><ul>";
+        filteredItems.forEach(function(item) {
+        var price = ['$', '$', '$', '$'];
+        list += "<li>" + item.name + " - " + item.rating + " - " + price[item.price_level-1] + "</li>";
+        });
+        list += "</ul>";
+        menu.innerHTML = list;
+    } else {
+        menu.innerHTML = "<p>No items found for the selected criteria.</p>";
+    }
 }
 
 async function handleFindRestaurants(midpoint, radius) {
