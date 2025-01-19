@@ -340,29 +340,32 @@ function handleChange() {
 // Function to display the filtered menu items
 function displayMenu(filteredItems) {
     // Clear previous results
+    menu = document.getElementById("verdictDisplay");
     menu.innerHTML = "";
+
+     // Initialize the carousel only once
+     if (!$('#verdictDisplay').hasClass('slick-initialized')) {
+        $('#verdictDisplay').slick({
+            prevArrow: '<button type="button" class="slick-custom-arrow slick-prev"> < </button>',
+            nextArrow: '<button type="button" class="slick-custom-arrow slick-next"> > </button>'
+        });
+    }
+
     // If there are matching items, display them
     if (filteredItems.length > 0) {
         filteredItems.forEach(function (item) {
             var price = "$$$$"; 
             var level;
-            
+
             if (item.price_level !== undefined) {
                 level = item.price_level;
             } else {
                 level = 1;
             }
 
-            console.log(item.name);
-
-            $('#verdictDisplay').slick({
-                prevArrow: '<button type="button" class="slick-custom-arrow slick-prev"> < </button>',
-                nextArrow: '<button type="button" class="slick-custom-arrow slick-next"> > </button>'
-            })
-
             $('#verdictDisplay').slick(
                 'slickAdd',
-                `<div>${item.name} || ${item.rating}<br>${price.substring(0, level)}</div>`);
+                `<div><b>${item.name}</b> || ${item.rating} ★<br>${price.substring(0, level)}</div>`);
         });
     } else {
         menu.innerHTML = "<p>No items found for the selected criteria.</p>";

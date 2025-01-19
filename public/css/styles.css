@@ -17,9 +17,21 @@
 #selectionPane #logo {
   height: 175px;
   padding: 15px;
+  margin: 10pt 0;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+#logo {
+  display: flex;
+  flex-direction: column;
+}
+
+#logo span {
+  font-size: 24pt;
+  font-weight: 900;
+  color: rgb(73, 64, 64);
 }
 
 #logo img {
@@ -80,11 +92,11 @@ input {
 #recommendedLabel {
   width: 50%;
   margin: 0 auto;
-  top: -0.1rem;
+  top: 10.5rem;
   left: 0;
   right: 0;
   text-align: center;
-  padding: 0.25rem 0.25rem;
+  padding: 0.3rem 0.25rem;
   background-color: #aebea4;
   position: absolute;
   border-radius: 0.6rem;
@@ -95,6 +107,18 @@ input {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  position: relative;
+}
+
+.slick-list {
+  width: 100%;
+}
+
+.slick-slide {
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 #verdictDisplay button {

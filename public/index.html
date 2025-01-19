@@ -6,9 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Deskover</title>
   <link rel="stylesheet" type="text/css" href="css/styles.css">
-  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
-  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel/slick/slick-theme.css"/>
-  <link rel="icon" type="image/x-icon" href="/img/datacakestack.png">
+  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
 </head>
 
 <body>
@@ -16,10 +14,13 @@
     <div id="selectionPane">
       <div id="logo">
         <img src="img/datacakestack.png">
+        <span>Deskover</span>
       </div>
+      <div id="recommendedLabel">Recommended</div>
       <div id="verdictDisplay" class="inputBox">
+        <div>Enter your address below to find the best restaurants between you and your friends!</div>
       </div>
-      <div id="addressInputs" class="inputBox">  
+      <div id="addressInputs" class="inputBox">
       </div>
       <div class="inputBox">
         <select id="price">
@@ -40,7 +41,7 @@
           <option value="1.5">1.5+ Stars</option>
           <option value="1">1+ Stars</option>
         </select>
-        
+
         <input type="number" id="searchRadius" placeholder="Radius (m)" name="radius" min="250" max="2000">
       </div>
       <div id="menu"></div>
