@@ -132,4 +132,27 @@ function initAddField() {
     })
 }
 
+function calculateMidpoint(place) {
+  if (place.length === 0) {
+    throw new Error('No locations provided.');
+  }
+
+  let totalLat = 0;
+  let totalLng = 0;
+
+  place.forEach(place => {
+    totalLat += place.location.lat;
+    totalLng += place.location.lng;
+  });
+
+  const midpoint = {
+    lat: totalLat / place.locations.length,
+    lng: totalLng / place.locations.length,
+  };
+
+  return midpoint; // { lat: <average latitude>, lng: <average longitude> }
+}
+
+console.log(midpoint);
+
 fetchApiKey();
