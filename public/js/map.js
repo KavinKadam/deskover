@@ -85,15 +85,15 @@ async function initSearch() {
     document.getElementById("addressInputs").appendChild(placeAutocomplete);
 
     // Inject HTML UI.
-    const selectedPlaceTitle = document.createElement("p");
+    // const selectedPlaceTitle = document.createElement("p");
 
-    selectedPlaceTitle.textContent = "";
-    document.getElementById("addressInputs").appendChild(selectedPlaceTitle);
+    // selectedPlaceTitle.textContent = "";
+    // document.getElementById("addressInputs").appendChild(selectedPlaceTitle);
 
-    const selectedPlaceInfo = document.createElement("pre");
+    // const selectedPlaceInfo = document.createElement("pre");
 
-    selectedPlaceInfo.textContent = "";
-    document.getElementById("addressInputs").appendChild(selectedPlaceInfo);
+    // selectedPlaceInfo.textContent = "";
+    // document.getElementById("addressInputs").appendChild(selectedPlaceInfo);
     // Add the gmp-placeselect listener, and display the results.
     //@ts-ignore
     placeAutocomplete.addEventListener("gmp-placeselect", async ({ place }) => {
@@ -101,12 +101,12 @@ async function initSearch() {
         await place.fetchFields({
             fields: ["displayName", "formattedAddress", "location"],
         });
-        selectedPlaceTitle.textContent = "Selected Place:";
-        selectedPlaceInfo.textContent = JSON.stringify(
-            place.toJSON(),
-      /* replacer */ null,
-      /* space */ 2,
-        );
+    //     selectedPlaceTitle.textContent = "Selected Place:";
+    //     selectedPlaceInfo.textContent = JSON.stringify(
+    //         place.toJSON(),
+    //   /* replacer */ null,
+    //   /* space */ 2,
+    //     );
 
         addresses.push(place.toJSON());
 
