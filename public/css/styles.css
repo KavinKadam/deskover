@@ -15,8 +15,11 @@
 }
 
 #selectionPane #logo {
-  height: 150px;
+  height: 175px;
   padding: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #logo img {
@@ -133,4 +136,8 @@ input {
     height: 500px;
     flex: none;
   }
+}
+
+li {
+  list-style-type: none;
 }
