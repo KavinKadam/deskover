@@ -8,6 +8,7 @@ let dot;
 let directionsService;
 let directionsRenderer;
 let midpoint;
+let verdict;
 
 // fetch API key
 async function fetchApiKey() {
@@ -48,6 +49,7 @@ async function initMap() {
     //const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
     directionsService = new google.maps.DirectionsService();
     directionsRenderer = new google.maps.DirectionsRenderer();
+    
 
     geocoder = new google.maps.Geocoder();
     map = new Map(document.getElementById("map"), {
@@ -78,7 +80,7 @@ async function initMap() {
 
   function calcRoute() {
     var start = new google.maps.LatLng(addresses[0].location.lat, addresses[0].location.lng);
-    var end = new google.maps.LatLng(midpoint.lat, midpoint.lng);
+    var end = verdict.address;
     var request = {
       origin: start,
       destination: end,
@@ -215,7 +217,6 @@ function calculateMidpoint(place) {
     }
 
     drawCircle(midpoint); // { lat: <average latitude>, lng: <average longitude> }
-    calcRoute();
 
 }   
 
@@ -292,6 +293,8 @@ async function handleFindRestaurants(midpoint, radius) {
     try {
         const restaurants = await findRestaurants(midpoint, radius);
         console.log('Found restaurants:', restaurants);
+        verdict = restaurants[0];  
+        calcRoute();
     } catch (error) {
         console.error('Error fetching restaurants:', error);
     }
