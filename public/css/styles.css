@@ -8,10 +8,10 @@
   height: 100vh;
   display: flex;
   flex-direction: row;
+  background-color: #faf1e4;
 }
 
 #map {
-  background-color: pink;
   flex: 1;
 }
 
@@ -24,9 +24,12 @@
   gap: 1rem;
 }
 
+.widget-container {
+  border: none;
+}
+
 .searchBar, .inputBox select {
   height: 2rem;
-  border: none;
   border-radius: 0.4rem;
 }
 
@@ -35,8 +38,25 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  background-color: bisque;
-  border-radius: 1rem;
+  background-color: #faf1e4;
+  border-radius: 0.6rem;
+  box-shadow: 6px 6px 2px #deb9ab;
+}
+
+#addButton {
+  display: block;
+  background-color: #aebea4;
+  color: white;
+  font-size: 20pt;
+  height: 2.2rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#addButton:hover {
+  transform: scale(1.05);
 }
 
 @media only screen and (max-width: 767px) {

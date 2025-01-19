@@ -3,6 +3,7 @@ let geocoder;
 let addresses = [];
 let searchBarCount = 2;
 let cityCircle;
+let dot;
 
 // fetch API key
 async function fetchApiKey() {
@@ -34,26 +35,27 @@ function loadMapScript(apiKey) {
 }
 
 async function initMap() {
-  const position = { lat: 49.246292, lng: -123.1207 };
+    // The location of Uluru
+    const position = { lat: -25.344, lng: 131.031 };
 
-  // Request needed libraries
-  const { Map } = await google.maps.importLibrary("maps");
-  //const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-  geocoder = new google.maps.Geocoder();
-  map = new Map(document.getElementById("map"), {
-    zoom: 12,
-    center: position,
-    mapId: "MIDPOINT_MAP",
-  });
-/*
-   // The marker, positioned at Uluru
-   const marker = new AdvancedMarkerElement({
-    map: map,
-    position: position,
-    title: "Uluru",
-  });*/
+    // Request needed libraries
+    const { Map } = await google.maps.importLibrary("maps");
+    //const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+    geocoder = new google.maps.Geocoder();
+    map = new Map(document.getElementById("map"), {
+        zoom: 10,
+        center: position,
+        mapId: "MIDPOINT_MAP",
+    });
+    /*
+       // The marker, positioned at Uluru
+       const marker = new AdvancedMarkerElement({
+        map: map,
+        position: position,
+        title: "Uluru",
+      });*/
 }
-/*
+
 function codeAddress() {
     var address = document.getElementById('address').value;
     geocoder.geocode({ 'address': address }, function (results, status) {
@@ -68,7 +70,7 @@ function codeAddress() {
         }
     });
 }
-*/
+
 async function initSearch() {
     // Request needed libraries.
     //@ts-ignore
@@ -154,8 +156,13 @@ function calculateMidpoint(place) {
         lng: totalLng / place.length,
     };
 
+    // remove circle & dot whenever new address field is filled
     if (cityCircle) {
         cityCircle.setMap(null);
+    }
+
+    if (dot) {
+        dot.setMap(null);
     }
 
     drawCircle(midpoint); // { lat: <average latitude>, lng: <average longitude> }
@@ -175,7 +182,7 @@ function drawCircle(midpoint) {
         radius: 500,
     });
 
-    const dot = new google.maps.Circle({
+    dot = new google.maps.Circle({
         strokeColor: "#FF0000",
         strokeOpacity: 1,
         strokeWeight: 2,
