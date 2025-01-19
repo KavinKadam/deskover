@@ -34,10 +34,6 @@
   gap: 1rem;
 }
 
-.pac-container {
-  font-family: Dekko;
-}
-
 .searchBar, .inputBox select {
   height: 2rem;
   border-radius: 0.4rem;
@@ -51,6 +47,10 @@
   background-color: #faf1e4;
   border-radius: 0.6rem;
   box-shadow: 6px 6px 2px #deb9ab;
+}
+
+input {
+  font-family: Dekko;
 }
 
 #addButton {
