@@ -187,4 +187,43 @@ function drawCircle(midpoint) {
     });
 }
 
+
+// Function to find restaurants near a location
+function findRestaurants(place, radius) {
+    return new Promise((resolve, reject) => {
+        const service = new google.maps.places.PlacesService(map);
+
+        // Define the search request
+        const request = {
+            location: place.location,
+            radius: radius,
+            type: 'restaurant',
+        };
+
+        // Perform the nearby search
+        service.nearbySearch(request, (results, status) => {
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+                const restaurants = results.map(place => ({
+                    name: place.name,
+                    address: place.vicinity,
+                    rating: place.rating,
+                    price_level: place.price_level,
+                }));
+                resolve(restaurants);
+            } else {
+                reject(`Error fetching restaurants: ${status}`);
+            }
+        });
+    });
+}
+
+async function handleFindRestaurants(midpoint, radius) {
+    try {
+        const restaurants = await findRestaurants(midpoint, radius);
+        console.log('Found restaurants:', restaurants);
+    } catch (error) {
+        console.error('Error fetching restaurants:', error);
+    }
+}
+
 fetchApiKey();
