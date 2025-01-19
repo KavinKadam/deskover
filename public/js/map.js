@@ -36,11 +36,15 @@ function loadMapScript(apiKey) {
 
 async function initMap() {
     // The location of Uluru
-    const position = { lat: -25.344, lng: 131.031 };
-
+    //const position = { lat: 49.246292, long: -123.116226 };
+    var position = new google.maps.LatLng(49.246292, -123.116226);
+    var chicago1 = new google.maps.LatLng(41.850033, -107.6500523);
     // Request needed libraries
     const { Map } = await google.maps.importLibrary("maps");
     //const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+    var directionsService = new google.maps.DirectionsService();
+    var directionsRenderer = new google.maps.DirectionsRenderer();
+
     geocoder = new google.maps.Geocoder();
     map = new Map(document.getElementById("map"), {
         zoom: 10,
@@ -53,8 +57,36 @@ async function initMap() {
         map: map,
         position: position,
         title: "Uluru",
-      });*/
+      });*/ 
+
+
+      directionsRenderer.setMap(map);
+      directionsRenderer.setPanel(document.getElementById('directionsPanel'));
+
+
+
+        calcRoute();
+      
+    
+   //   document.getElementById("start").addEventListener("change", onChangeHandler);
+    //  document.getElementById("end").addEventListener("change", onChangeHandler);
 }
+
+
+  function calcRoute() {
+    var start = new google.maps.LatLng(49.26073820632124, -123.24589724402404);
+    var end = new google.maps.LatLng(49.27932973510947, -122.92014097134035);
+    var request = {
+      origin: start,
+      destination: end,
+      travelMode: 'DRIVING'
+    };
+    directionsService.route(request, function(result, status) {
+      if (status == 'OK') {
+        directionsRenderer.setDirections(result);
+      }
+    });
+  }
 
 function codeAddress() {
     var address = document.getElementById('address').value;
@@ -167,7 +199,7 @@ function calculateMidpoint(place) {
 
     drawCircle(midpoint); // { lat: <average latitude>, lng: <average longitude> }
 
-}
+}   
 
 function drawCircle(midpoint) {
     const center = { lat: midpoint.lat, lng: midpoint.lng };
