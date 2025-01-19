@@ -5,6 +5,9 @@ let markers = [];
 let searchBarCount = 0;
 let cityCircle;
 let dot;
+let directionsService;
+let directionsRenderer;
+let midpoint;
 
 // fetch API key
 async function fetchApiKey() {
@@ -36,17 +39,70 @@ function loadMapScript(apiKey) {
 }
 
 async function initMap() {
-    // The location of Vancouver
-    const position = { lat: 49.246292, lng: -123.116226 };
-
+    // The location of Uluru
+    //const position = { lat: 49.246292, long: -123.116226 };
+    var position = new google.maps.LatLng(49.246292, -123.116226);
+    var chicago1 = new google.maps.LatLng(41.850033, -107.6500523);
     // Request needed libraries
     const { Map } = await google.maps.importLibrary("maps");
+    //const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+    directionsService = new google.maps.DirectionsService();
+    directionsRenderer = new google.maps.DirectionsRenderer();
 
     geocoder = new google.maps.Geocoder();
     map = new Map(document.getElementById("map"), {
         zoom: 12,
         center: position,
         mapId: "MIDPOINT_MAP",
+    });
+    /*
+       // The marker, positioned at Uluru
+       const marker = new AdvancedMarkerElement({
+        map: map,
+        position: position,
+        title: "Uluru",
+      });*/ 
+
+
+      directionsRenderer.setMap(map);
+      directionsRenderer.setPanel(document.getElementById('directionsPanel'));
+
+
+
+      
+    
+   //   document.getElementById("start").a  ddEventListener("change", onChangeHandler);
+    //  document.getElementById("end").addEventListener("change", onChangeHandler);
+}
+
+
+  function calcRoute() {
+    var start = new google.maps.LatLng(addresses[0].location.lat, addresses[0].location.lng);
+    var end = new google.maps.LatLng(midpoint.lat, midpoint.lng);
+    var request = {
+      origin: start,
+      destination: end,
+      travelMode: 'DRIVING'
+    };
+    directionsService.route(request, function(result, status) {
+      if (status == 'OK') {
+        directionsRenderer.setDirections(result);
+      }
+    });
+  }
+
+function codeAddress() {
+    var address = document.getElementById('address').value;
+    geocoder.geocode({ 'address': address }, function (results, status) {
+        if (status == 'OK') {
+            map.setCenter(results[0].geometry.location);
+            var marker = new google.maps.Marker({
+                map: map,
+                position: results[0].geometry.location
+            });
+        } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+        }
     });
 }
 
@@ -144,7 +200,7 @@ function calculateMidpoint(place) {
         totalLng += place.location.lng;
     });
 
-    const midpoint = {
+    midpoint = {
         lat: totalLat / place.length,
         lng: totalLng / place.length,
     };
@@ -159,8 +215,9 @@ function calculateMidpoint(place) {
     }
 
     drawCircle(midpoint); // { lat: <average latitude>, lng: <average longitude> }
+    calcRoute();
 
-}
+}   
 
 function drawCircle(midpoint) {
     const center = { lat: midpoint.lat, lng: midpoint.lng };
