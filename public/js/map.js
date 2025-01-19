@@ -1,6 +1,7 @@
 let map;
 let geocoder;
 let addresses = [];
+let searchBarCount = 2;
 
 // fetch API key
 async function fetchApiKey() {
@@ -13,6 +14,7 @@ async function fetchApiKey() {
     initMap();  //  initialize the map
     initSearch(); // initialize the autocomplete search bar
     initSearch();
+    initAddField();
 
   } catch (error) {
     console.error('Error fetching API key:', error);
@@ -112,6 +114,22 @@ async function initSearch() {
         title: place.displayName,
     })
   });
+}
+
+function initAddField() {
+    const addButton = document.createElement("button");
+    addButton.innerHTML = "+";
+    addButton.id = "addButton";
+        document.getElementById("addressInputs").appendChild(addButton);
+
+    addButton.addEventListener("click", () => {
+        initSearch();
+        searchBarCount++;
+
+        if (searchBarCount == 5) {
+            document.getElementById("addButton").remove();
+        }
+    })
 }
 
 fetchApiKey();
