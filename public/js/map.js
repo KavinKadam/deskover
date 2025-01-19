@@ -5,13 +5,16 @@ let markers = [];
 let searchBarCount = 0;
 let cityCircle;
 let dot;
+<<<<<<< Updated upstream
 let directionsService;
 let directionsRenderer;
 let midpoint;
 let verdict;
 let restaurants;
+=======
 let midpoint;
 let userRadius = 500;
+>>>>>>> Stashed changes
 
 // fetch API key
 async function fetchApiKey() {
@@ -372,9 +375,12 @@ async function handleFindRestaurants(midpoint, radius) {
     }
 }
 
+<<<<<<< Updated upstream
 fetchApiKey();
 carousel();
+=======
 
 
 
 fetchApiKey();
+>>>>>>> Stashed changes
