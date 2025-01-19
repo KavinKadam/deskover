@@ -136,5 +136,4 @@ function calculateMidpoint(place) {
 }
 
 console.log(midpoint);
-
 fetchApiKey();
