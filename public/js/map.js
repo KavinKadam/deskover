@@ -5,6 +5,10 @@ let markers = [];
 let searchBarCount = 0;
 let cityCircle;
 let dot;
+let directionsService;
+let directionsRenderer;
+let midpoint;
+let verdict;
 let restaurants;
 
 // fetch API key
@@ -42,12 +46,65 @@ async function initMap() {
 
     // Request needed libraries
     const { Map } = await google.maps.importLibrary("maps");
+    //const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+    directionsService = new google.maps.DirectionsService();
+    directionsRenderer = new google.maps.DirectionsRenderer();
+    
 
     geocoder = new google.maps.Geocoder();
     map = new Map(document.getElementById("map"), {
         zoom: 12,
         center: position,
         mapId: "MIDPOINT_MAP",
+    });
+    /*
+       // The marker, positioned at Uluru
+       const marker = new AdvancedMarkerElement({
+        map: map,
+        position: position,
+        title: "Uluru",
+      });*/ 
+
+
+      directionsRenderer.setMap(map);
+      directionsRenderer.setPanel(document.getElementById('directionsPanel'));
+
+
+
+      
+    
+   //   document.getElementById("start").a  ddEventListener("change", onChangeHandler);
+    //  document.getElementById("end").addEventListener("change", onChangeHandler);
+}
+
+
+  function calcRoute() {
+    var start = new google.maps.LatLng(addresses[0].location.lat, addresses[0].location.lng);
+    var end = verdict.address;
+    var request = {
+      origin: start,
+      destination: end,
+      travelMode: 'DRIVING'
+    };
+    directionsService.route(request, function(result, status) {
+      if (status == 'OK') {
+        directionsRenderer.setDirections(result);
+      }
+    });
+  }
+
+function codeAddress() {
+    var address = document.getElementById('address').value;
+    geocoder.geocode({ 'address': address }, function (results, status) {
+        if (status == 'OK') {
+            map.setCenter(results[0].geometry.location);
+            var marker = new google.maps.Marker({
+                map: map,
+                position: results[0].geometry.location
+            });
+        } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+        }
     });
 }
 
@@ -83,12 +140,12 @@ async function initSearch() {
         await place.fetchFields({
             fields: ["displayName", "formattedAddress", "location"],
         });
-    //     selectedPlaceTitle.textContent = "Selected Place:";
-    //     selectedPlaceInfo.textContent = JSON.stringify(
-    //         place.toJSON(),
-    //   /* replacer */ null,
-    //   /* space */ 2,
-    //     );
+        //     selectedPlaceTitle.textContent = "Selected Place:";
+        //     selectedPlaceInfo.textContent = JSON.stringify(
+        //         place.toJSON(),
+        //   /* replacer */ null,
+        //   /* space */ 2,
+        //     );
 
         if (!addresses[this.id]) {
             addresses.push(place.toJSON());
@@ -194,7 +251,7 @@ function drawCircle(midpoint) {
 
 // Function to pan to new mid point
 function panToCenter(newLat, newLng) {
-    if(map) {
+    if (map) {
         const newCenter = new google.maps.LatLng(newLat, newLng);
         map.panTo(newCenter);
         map.setZoom(16);
@@ -245,59 +302,12 @@ async function handleFindRestaurants(midpoint, radius) {
     try {
         const restaurants = await findRestaurants(midpoint, radius);
         console.log('Found restaurants:', restaurants);
+        verdict = restaurants[0];  
+        calcRoute();
     } catch (error) {
         console.error('Error fetching restaurants:', error);
     }
 }
 
-document.getElementById("rating").addEventListener('change', handleChange);
-document.getElementById("price").addEventListener('change', handleChange);
-
-function handleChange() {
-    var rating = parseFloat(document.getElementById('rating').value);
-    var priceRange = parseInt(document.getElementById('price').value);
-
-    // Filter based on selected rating and price level
-    let filteredItems = restaurants;
-    console.log(filteredItems);
-    if (rating) {
-        filteredItems = filteredItems.filter(restaurant => restaurant.rating >= rating);
-    }
-
-    if (priceRange >= 0) {
-        filteredItems = filteredItems.filter(restaurant => restaurant.price_level === priceRange);
-    }
-    /*
-    // Sort filtered items by distance if required (distance already calculated earlier)
-    filteredItems.sort((a, b) => {
-        const distanceA = google.maps.geometry.spherical.computeDistanceBetween(midpoint, new google.maps.LatLng(a.lat, a.lng));
-        const distanceB = google.maps.geometry.spherical.computeDistanceBetween(midpoint, new google.maps.LatLng(b.lat, b.lng));
-        return distanceA - distanceB;
-    });*/
-
-    // Display the filtered menu
-    displayMenu(filteredItems);
-}
-
-// Function to display the filtered menu items
-function displayMenu(filteredItems) {
-    var menu = document.getElementById('menu');
-
-    // Clear previous results
-    menu.innerHTML = "";
-
-    // If there are matching items, display them
-    if (filteredItems.length > 0) {
-        var list = "<h3>Filtered Menu:</h3><ul>";
-        filteredItems.forEach(function(item) {
-        var price = ['$', '$', '$', '$'];
-        list += "<li>" + item.name + " - " + item.rating + " - " + price[item.price_level-1] + "</li>";
-        });
-        list += "</ul>";
-        menu.innerHTML = list;
-    } else {
-        menu.innerHTML = "<p>No items found for the selected criteria.</p>";
-    }
-}
-
 fetchApiKey();
+carousel();
