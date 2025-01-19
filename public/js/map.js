@@ -2,6 +2,7 @@ let map;
 let geocoder;
 let addresses = [];
 let searchBarCount = 2;
+let cityCircle;
 
 // fetch API key
 async function fetchApiKey() {
@@ -153,7 +154,12 @@ function calculateMidpoint(place) {
         lng: totalLng / place.length,
     };
 
+    if (cityCircle) {
+        cityCircle.setMap(null);
+    }
+
     drawCircle(midpoint); // { lat: <average latitude>, lng: <average longitude> }
+
 }
 
 function drawCircle(midpoint) {
@@ -180,6 +186,49 @@ function drawCircle(midpoint) {
         center: center,
         radius: 10,
     });
+
+    handleFindRestaurants(midpoint, cityCircle.radius);
 }
+
+
+// Function to find restaurants near a location
+function findRestaurants(place, radius) {
+    return new Promise((resolve, reject) => {
+        const service = new google.maps.places.PlacesService(map);
+
+        // Define the search request
+        const request = {
+            location: place,
+            radius: radius,
+            type: 'restaurant',
+        };
+
+        // Perform the nearby search
+        service.nearbySearch(request, (results, status) => {
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+                const restaurants = results.map(place => ({
+                    name: place.name,
+                    address: place.vicinity,
+                    rating: place.rating,
+                    price_level: place.price_level,
+                }));
+                resolve(restaurants);
+            } else {
+                reject(`Error fetching restaurants: ${status}`);
+            }
+        });
+    });
+}
+
+async function handleFindRestaurants(midpoint, radius) {
+    try {
+        const restaurants = await findRestaurants(midpoint, radius);
+        console.log('Found restaurants:', restaurants);
+    } catch (error) {
+        console.error('Error fetching restaurants:', error);
+    }
+}
+
+
 
 fetchApiKey();
