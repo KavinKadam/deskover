@@ -192,6 +192,8 @@ function drawCircle(midpoint) {
         center: center,
         radius: 10,
     });
+
+    handleFindRestaurants(midpoint, cityCircle.radius);
 }
 
 
@@ -202,7 +204,7 @@ function findRestaurants(place, radius) {
 
         // Define the search request
         const request = {
-            location: place.location,
+            location: place,
             radius: radius,
             type: 'restaurant',
         };

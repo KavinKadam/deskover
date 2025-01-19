@@ -8,7 +8,7 @@
   height: 100vh;
   display: flex;
   flex-direction: row;
-  background-color: #faf1e4;
+  background-color: rgb(244, 222, 222);
 }
 
 #map {
