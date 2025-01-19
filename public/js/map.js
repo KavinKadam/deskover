@@ -2,6 +2,7 @@ let map;
 let geocoder;
 let addresses = [];
 let searchBarCount = 2;
+let cityCircle;
 
 // fetch API key
 async function fetchApiKey() {
@@ -153,6 +154,10 @@ function calculateMidpoint(place) {
         lat: totalLat / place.length,
         lng: totalLng / place.length,
     };
+
+    if (cityCircle) {
+        cityCircle.setMap(null);
+    }
 
     drawCircle(midpoint); // { lat: <average latitude>, lng: <average longitude> }
 }
