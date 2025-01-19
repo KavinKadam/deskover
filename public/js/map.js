@@ -1,7 +1,8 @@
 let map;
 let geocoder;
 let addresses = [];
-let searchBarCount = 2;
+let markers = [];
+let searchBarCount = 0;
 let cityCircle;
 let dot;
 
@@ -13,10 +14,10 @@ async function fetchApiKey() {
 
         await loadMapScript(apiKey);  // load google maps script
 
-        initMap();  //  initialize the map
-        initSearch(); // initialize the autocomplete search bar
-        initSearch();
         initAddField();
+        await initMap();  //  initialize the map
+        await initSearch(); // initialize the autocomplete search bar
+        await initSearch();
 
     } catch (error) {
         console.error('Error fetching API key:', error);
@@ -50,6 +51,8 @@ async function initMap() {
 }
 
 async function initSearch() {
+    searchBarCount++;
+
     // Request needed libraries.
     //@ts-ignore
     await google.maps.importLibrary("places");
@@ -58,6 +61,7 @@ async function initSearch() {
     // Create the input HTML element, and append it.
     //@ts-ignore
     const placeAutocomplete = new google.maps.places.PlaceAutocompleteElement();
+    placeAutocomplete.id = searchBarCount - 1;
 
     //@ts-ignore
     document.getElementById("addressInputs").appendChild(placeAutocomplete);
@@ -74,8 +78,7 @@ async function initSearch() {
     // document.getElementById("addressInputs").appendChild(selectedPlaceInfo);
     // Add the gmp-placeselect listener, and display the results.
     //@ts-ignore
-    placeAutocomplete.addEventListener("gmp-placeselect", async ({ place }) => {
-        console.log(place);
+    placeAutocomplete.addEventListener("gmp-placeselect", async function ({ place }) {
         await place.fetchFields({
             fields: ["displayName", "formattedAddress", "location"],
         });
@@ -86,13 +89,26 @@ async function initSearch() {
     //   /* space */ 2,
     //     );
 
-        addresses.push(place.toJSON());
+        if (!addresses[this.id]) {
+            addresses.push(place.toJSON());
+        } else {
+            addresses[this.id] = place.toJSON();
+        }
+
+        console.log(addresses);
 
         const marker = new AdvancedMarkerElement({
             map,
             position: place.location,
             title: place.displayName,
         })
+
+        if (!markers[this.id]) {
+            markers.push(marker);
+        } else {
+            markers[this.id].setMap(null);
+            markers[this.id] = marker;
+        }
 
         if (addresses.length >= 2) {
             calculateMidpoint(addresses);
@@ -108,7 +124,6 @@ function initAddField() {
 
     addButton.addEventListener("click", () => {
         initSearch();
-        searchBarCount++;
 
         if (searchBarCount == 5) {
             document.getElementById("addButton").remove();
