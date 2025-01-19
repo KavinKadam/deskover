@@ -5,11 +5,16 @@ let markers = [];
 let searchBarCount = 0;
 let cityCircle;
 let dot;
+<<<<<<< Updated upstream
 let directionsService;
 let directionsRenderer;
 let midpoint;
 let verdict;
 let restaurants;
+=======
+let midpoint;
+let userRadius = 500;
+>>>>>>> Stashed changes
 
 // fetch API key
 async function fetchApiKey() {
@@ -17,17 +22,34 @@ async function fetchApiKey() {
         const response = await axios.get('/api-key');
         const apiKey = response.data.apiKey;
 
-        await loadMapScript(apiKey);  // load google maps script
+        await loadMapScript(apiKey);
 
         initAddField();
-        await initMap();  //  initialize the map
-        await initSearch(); // initialize the autocomplete search bar
+        await initMap();
+        await initSearch();
         await initSearch();
 
     } catch (error) {
         console.error('Error fetching API key:', error);
     }
 }
+
+document.getElementById("searchRadius").addEventListener("input", (event) => {
+    const value = parseInt(event.target.value, 10);
+
+    if (!isNaN(value) && value >= 250 && value <= 2000) {
+        userRadius = value;
+        console.log(`Updated radius: ${userRadius} meters`);
+        updateCircleRadius(midpoint, userRadius);
+        findRestaurants(midpoint, userRadius)
+        // Redraw the circle with the updated radius
+        if (midpoint) {
+            updateCircleRadius(midpoint, userRadius);
+        }
+    } else {
+        console.error("Invalid radius input. Radius must be between 250 and 2000 meters.");
+    }
+});
 
 // load google maps script
 function loadMapScript(apiKey) {
@@ -204,7 +226,7 @@ function calculateMidpoint(place) {
         dot.setMap(null);
     }
 
-    drawCircle(midpoint); // { lat: <average latitude>, lng: <average longitude> }
+    drawCircle(midpoint, userRadius); // { lat: <average latitude>, lng: <average longitude> }
 
 }
 
@@ -219,7 +241,7 @@ function drawCircle(midpoint) {
         fillOpacity: 0.35,
         map,
         center: center,
-        radius: 500,
+        radius: userRadius,
     });
 
     dot = new google.maps.Circle({
@@ -235,6 +257,17 @@ function drawCircle(midpoint) {
 
     panToCenter(midpoint.lat, midpoint.lng);
     handleFindRestaurants(midpoint, cityCircle.radius);
+}
+
+// Update the radius of the circle dynamically
+function updateCircleRadius(midpoint, radius) {
+    if (cityCircle) {
+        cityCircle.setRadius(radius);
+        console.log(`Circle radius updated to ${radius} meters`);
+        handleFindRestaurants(midpoint, radius);
+    } else {
+    console.error("No circle exists to update.");
+}
 }
 
 // Function to pan to new mid point
@@ -268,7 +301,6 @@ function findRestaurants(place, radius) {
                     const distanceB = google.maps.geometry.spherical.computeDistanceBetween(place, b.geometry.location);
                     return distanceA - distanceB;
                   });
-                
                 restaurants = results.map(place => ({
                     name: place.name,
                     address: place.vicinity,
@@ -277,7 +309,9 @@ function findRestaurants(place, radius) {
                     lat: place.geometry.location.lat(),
                     lng: place.geometry.location.lng(),
                 }));
-
+                verdict = restaurants[0];  
+                calcRoute();
+                displayMenu(results);
                 resolve(restaurants);
             } else {
                 reject(`Error fetching restaurants: ${status}`);
@@ -301,10 +335,12 @@ function handleChange() {
     if (priceRange >= 0) {
         filteredItems = filteredItems.filter(restaurant => restaurant.price_level === priceRange);
     }
-
+    verdict = restaurants[0];  
+    calcRoute();
     // Display the filtered menu
     displayMenu(filteredItems);
 }
+
 // Function to display the filtered menu items
 function displayMenu(filteredItems) {
     var menu = document.getElementById('menu');
@@ -314,8 +350,14 @@ function displayMenu(filteredItems) {
     if (filteredItems.length > 0) {
         var list = "<h3>Filtered Menu:</h3><ul>";
         filteredItems.forEach(function(item) {
-        var price = ['$', '$', '$', '$'];
-        list += "<li>" + item.name + " - " + item.rating + " - " + price[item.price_level-1] + "</li>";
+        var price = "$$$$";
+        var level;
+        if(item.price_level !== undefined) {
+            level = item.price_level;
+        } else {
+            level = 1;
+        }
+        list += "<li>" + item.name + " - " + item.rating + " - " + price.substring(0,level) + "</li>";
         });
         list += "</ul>";
         menu.innerHTML = list;
@@ -328,63 +370,17 @@ async function handleFindRestaurants(midpoint, radius) {
     try {
         const restaurants = await findRestaurants(midpoint, radius);
         console.log('Found restaurants:', restaurants);
-        verdict = restaurants[0];  
-        calcRoute();
     } catch (error) {
         console.error('Error fetching restaurants:', error);
     }
 }
 
-function carousel() {
-    $('#verdictDisplay').slick({
-        prevArrow: '<button type="button" class="slick-custom-arrow slick-prev"> < </button>',
-        nextArrow: '<button type="button" class="slick-custom-arrow slick-next"> > </button>'
-    });
-}
-
-document.getElementById("rating").addEventListener('change', handleChange);
-document.getElementById("price").addEventListener('change', handleChange);
-function handleChange() {
-    var rating = parseFloat(document.getElementById('rating').value);
-    var priceRange = parseInt(document.getElementById('price').value);
-    // Filter based on selected rating and price level
-    let filteredItems = restaurants;
-    console.log(filteredItems);
-    if (rating) {
-        filteredItems = filteredItems.filter(restaurant => restaurant.rating >= rating);
-    }
-    if (priceRange >= 0) {
-        filteredItems = filteredItems.filter(restaurant => restaurant.price_level === priceRange);
-    }
-    /*
-    // Sort filtered items by distance if required (distance already calculated earlier)
-    filteredItems.sort((a, b) => {
-        const distanceA = google.maps.geometry.spherical.computeDistanceBetween(midpoint, new google.maps.LatLng(a.lat, a.lng));
-        const distanceB = google.maps.geometry.spherical.computeDistanceBetween(midpoint, new google.maps.LatLng(b.lat, b.lng));
-        return distanceA - distanceB;
-    });*/
-    // Display the filtered menu
-    displayMenu(filteredItems);
-}
-
-// Function to display the filtered menu items
-function displayMenu(filteredItems) {
-    var menu = document.getElementById('menu');
-    // Clear previous results
-    menu.innerHTML = "";
-    // If there are matching items, display them
-    if (filteredItems.length > 0) {
-        var list = "<h3>Filtered Menu:</h3><ul>";
-        filteredItems.forEach(function(item) {
-        var price = ['$', '$', '$', '$'];
-        list += "<li>" + item.name + " - " + item.rating + " - " + price[item.price_level-1] + "</li>";
-        });
-        list += "</ul>";
-        menu.innerHTML = list;
-    } else {
-        menu.innerHTML = "<p>No items found for the selected criteria.</p>";
-    }
-}
-
+<<<<<<< Updated upstream
 fetchApiKey();
 carousel();
+=======
+
+
+
+fetchApiKey();
+>>>>>>> Stashed changes
